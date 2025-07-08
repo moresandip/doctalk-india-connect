@@ -3,6 +3,8 @@ import { Layout } from '@/components/Layout';
 import { AuthScreen } from '@/components/AuthScreen';
 import { Dashboard } from '@/components/Dashboard';
 import { NetworkingHub } from '@/components/NetworkingHub';
+import { CasesScreen } from '@/components/CasesScreen';
+import { EventsScreen } from '@/components/EventsScreen';
 import { ProfileScreen } from '@/components/ProfileScreen';
 import { BottomNavigation } from '@/components/BottomNavigation';
 
@@ -54,6 +56,10 @@ const Index = () => {
         return <Dashboard />;
       case 'network':
         return <NetworkingHub />;
+      case 'discussions':
+        return <CasesScreen />;
+      case 'events':
+        return <EventsScreen />;
       case 'profile':
         return <ProfileScreen />;
       default:
