@@ -5,6 +5,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Shield, Heart, Users, Stethoscope, CheckCircle } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+
+interface AuthScreenProps {
+  onAuthSuccess: () => void;
+}
 
 /**
  * Authentication Screen Component
@@ -18,8 +23,73 @@ import { Shield, Heart, Users, Stethoscope, CheckCircle } from 'lucide-react';
  * Rationale: Doctors need to trust the platform immediately. The verification
  * process must feel secure and professional, not like a social media app.
  */
-export function AuthScreen() {
+export function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
   const [activeTab, setActiveTab] = useState('login');
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+
+  // Form states
+  const [loginForm, setLoginForm] = useState({
+    registrationNumber: '',
+    password: ''
+  });
+
+  const [registerForm, setRegisterForm] = useState({
+    firstName: '',
+    lastName: '',
+    registrationNumber: '',
+    email: '',
+    medicalCollege: '',
+    password: ''
+  });
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    // Simulate API call
+    setTimeout(() => {
+      if (loginForm.registrationNumber && loginForm.password) {
+        toast({
+          title: "Welcome back!",
+          description: "Successfully signed in to your account.",
+        });
+        onAuthSuccess();
+      } else {
+        toast({
+          title: "Invalid credentials",
+          description: "Please check your registration number and password.",
+          variant: "destructive"
+        });
+      }
+      setIsLoading(false);
+    }, 1500);
+  };
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    // Simulate API call with validation
+    setTimeout(() => {
+      if (registerForm.firstName && registerForm.lastName && 
+          registerForm.registrationNumber && registerForm.email && 
+          registerForm.medicalCollege && registerForm.password) {
+        toast({
+          title: "Account created successfully!",
+          description: "Your medical credentials are being verified. Welcome to DocTalk!",
+        });
+        onAuthSuccess();
+      } else {
+        toast({
+          title: "Registration failed",
+          description: "Please fill in all required fields.",
+          variant: "destructive"
+        });
+      }
+      setIsLoading(false);
+    }, 2000);
+  };
 
   const trustIndicators = [
     { icon: Shield, text: "Medical License Verified", color: "bg-success" },
@@ -76,22 +146,41 @@ export function AuthScreen() {
                   Sign in to your verified medical professional account
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <Input 
-                  placeholder="Medical Registration Number" 
-                  className="h-12"
-                />
-                <Input 
-                  type="password" 
-                  placeholder="Password" 
-                  className="h-12"
-                />
-                <Button variant="premium" className="w-full h-12 text-base">
-                  Sign In
-                </Button>
-                <Button variant="ghost" className="w-full">
-                  Forgot Password?
-                </Button>
+              <CardContent>
+                <form onSubmit={handleLogin} className="space-y-4">
+                  <Input 
+                    placeholder="Medical Registration Number" 
+                    className="h-12"
+                    value={loginForm.registrationNumber}
+                    onChange={(e) => setLoginForm(prev => ({ 
+                      ...prev, 
+                      registrationNumber: e.target.value 
+                    }))}
+                    required
+                  />
+                  <Input 
+                    type="password" 
+                    placeholder="Password" 
+                    className="h-12"
+                    value={loginForm.password}
+                    onChange={(e) => setLoginForm(prev => ({ 
+                      ...prev, 
+                      password: e.target.value 
+                    }))}
+                    required
+                  />
+                  <Button 
+                    type="submit" 
+                    variant="premium" 
+                    className="w-full h-12 text-base"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Signing In..." : "Sign In"}
+                  </Button>
+                  <Button variant="ghost" className="w-full" type="button">
+                    Forgot Password?
+                  </Button>
+                </form>
               </CardContent>
             </Card>
           </TabsContent>
@@ -104,49 +193,98 @@ export function AuthScreen() {
                   Create your verified professional account
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-3">
-                  <Input placeholder="First Name" className="h-12" />
-                  <Input placeholder="Last Name" className="h-12" />
-                </div>
-                <Input 
-                  placeholder="Medical Registration Number" 
-                  className="h-12"
-                />
-                <Input 
-                  type="email" 
-                  placeholder="Professional Email" 
-                  className="h-12"
-                />
-                <Input 
-                  placeholder="Medical College/University" 
-                  className="h-12"
-                />
-                <Input 
-                  type="password" 
-                  placeholder="Create Password" 
-                  className="h-12"
-                />
-                
-                {/* Verification badge */}
-                <div className="flex items-center gap-2 p-3 bg-success/10 rounded-lg border border-success/20">
-                  <CheckCircle className="w-5 h-5 text-success" />
-                  <div>
-                    <p className="text-sm font-medium text-success">Instant Verification</p>
-                    <p className="text-xs text-muted-foreground">
-                      Your credentials will be verified with Indian Medical Council
-                    </p>
+              <CardContent>
+                <form onSubmit={handleRegister} className="space-y-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    <Input 
+                      placeholder="First Name" 
+                      className="h-12"
+                      value={registerForm.firstName}
+                      onChange={(e) => setRegisterForm(prev => ({ 
+                        ...prev, 
+                        firstName: e.target.value 
+                      }))}
+                      required
+                    />
+                    <Input 
+                      placeholder="Last Name" 
+                      className="h-12"
+                      value={registerForm.lastName}
+                      onChange={(e) => setRegisterForm(prev => ({ 
+                        ...prev, 
+                        lastName: e.target.value 
+                      }))}
+                      required
+                    />
                   </div>
-                </div>
+                  <Input 
+                    placeholder="Medical Registration Number" 
+                    className="h-12"
+                    value={registerForm.registrationNumber}
+                    onChange={(e) => setRegisterForm(prev => ({ 
+                      ...prev, 
+                      registrationNumber: e.target.value 
+                    }))}
+                    required
+                  />
+                  <Input 
+                    type="email" 
+                    placeholder="Professional Email" 
+                    className="h-12"
+                    value={registerForm.email}
+                    onChange={(e) => setRegisterForm(prev => ({ 
+                      ...prev, 
+                      email: e.target.value 
+                    }))}
+                    required
+                  />
+                  <Input 
+                    placeholder="Medical College/University" 
+                    className="h-12"
+                    value={registerForm.medicalCollege}
+                    onChange={(e) => setRegisterForm(prev => ({ 
+                      ...prev, 
+                      medicalCollege: e.target.value 
+                    }))}
+                    required
+                  />
+                  <Input 
+                    type="password" 
+                    placeholder="Create Password" 
+                    className="h-12"
+                    value={registerForm.password}
+                    onChange={(e) => setRegisterForm(prev => ({ 
+                      ...prev, 
+                      password: e.target.value 
+                    }))}
+                    required
+                  />
+                  
+                  {/* Verification badge */}
+                  <div className="flex items-center gap-2 p-3 bg-success/10 rounded-lg border border-success/20">
+                    <CheckCircle className="w-5 h-5 text-success" />
+                    <div>
+                      <p className="text-sm font-medium text-success">Instant Verification</p>
+                      <p className="text-xs text-muted-foreground">
+                        Your credentials will be verified with Indian Medical Council
+                      </p>
+                    </div>
+                  </div>
 
-                <Button variant="premium" className="w-full h-12 text-base">
-                  Create Account & Verify
-                </Button>
-                
-                <p className="text-xs text-muted-foreground text-center leading-relaxed">
-                  By registering, you agree to our Terms of Service and Privacy Policy. 
-                  Account subject to medical license verification.
-                </p>
+                  <Button 
+                    type="submit" 
+                    variant="premium" 
+                    className="w-full h-12 text-base"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Creating Account..." : "Create Account & Verify"}
+                  </Button>
+                  
+                  <p className="text-xs text-muted-foreground text-center leading-relaxed">
+                    By registering, you agree to our Terms of Service and Privacy Policy. 
+                    Account subject to medical license verification.
+                  </p>
+                </form>
               </CardContent>
             </Card>
           </TabsContent>

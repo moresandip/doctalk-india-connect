@@ -43,7 +43,7 @@ const Index = () => {
   if (!isAuthenticated) {
     return (
       <Layout>
-        <AuthScreen />
+        <AuthScreen onAuthSuccess={() => setIsAuthenticated(true)} />
       </Layout>
     );
   }
