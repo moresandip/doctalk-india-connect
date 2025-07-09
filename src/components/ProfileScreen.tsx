@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
 import { ProfileEditDialog } from './ProfileEditDialog';
+import { ScheduleDialog } from './ScheduleDialog';
+import { ReferPatientDialog } from './ReferPatientDialog';
 import { 
   MapPin, 
   GraduationCap, 
@@ -248,14 +250,18 @@ export function ProfileScreen() {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-2 gap-3">
-          <Button variant="outline" className="h-12">
-            <Calendar className="w-4 h-4 mr-2" />
-            Schedule
-          </Button>
-          <Button variant="premium" className="h-12">
-            <Users className="w-4 h-4 mr-2" />
-            Refer Patient
-          </Button>
+          <ScheduleDialog>
+            <Button variant="outline" className="h-12">
+              <Calendar className="w-4 h-4 mr-2" />
+              Schedule
+            </Button>
+          </ScheduleDialog>
+          <ReferPatientDialog>
+            <Button variant="premium" className="h-12">
+              <Users className="w-4 h-4 mr-2" />
+              Refer Patient
+            </Button>
+          </ReferPatientDialog>
         </div>
       </div>
     </div>
