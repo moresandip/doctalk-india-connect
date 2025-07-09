@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { MessagingDialog } from './MessagingDialog';
+import { useToast } from '@/hooks/use-toast';
 import { 
   Search, 
   Filter, 
@@ -33,6 +35,24 @@ import {
  */
 export function NetworkingHub() {
   const [activeTab, setActiveTab] = useState('discover');
+  const [connections, setConnections] = useState<string[]>([]);
+  const { toast } = useToast();
+
+  const handleConnect = (doctorId: number, doctorName: string) => {
+    if (connections.includes(doctorId.toString())) {
+      toast({
+        title: "Already Connected",
+        description: `You are already connected with ${doctorName}`,
+      });
+      return;
+    }
+
+    setConnections(prev => [...prev, doctorId.toString()]);
+    toast({
+      title: "Connection Request Sent",
+      description: `Connection request sent to ${doctorName}`,
+    });
+  };
 
   const suggestedConnections = [
     {
@@ -154,13 +174,19 @@ export function NetworkingHub() {
         </div>
         
         <div className="flex gap-2">
-          <Button variant="premium" size="sm" className="flex-1">
+          <Button 
+            variant={connections.includes(doctor.id.toString()) ? "outline" : "premium"} 
+            size="sm" 
+            className="flex-1"
+            onClick={() => handleConnect(doctor.id, doctor.name)}
+          >
             <UserPlus className="w-3 h-3 mr-1" />
-            Connect
+            {connections.includes(doctor.id.toString()) ? "Connected" : "Connect"}
           </Button>
-          <Button variant="outline" size="sm">
-            <MessageCircle className="w-3 h-3" />
-          </Button>
+          <MessagingDialog 
+            doctorName={doctor.name}
+            doctorInitials={doctor.name.split(' ').map((n: string) => n[0]).join('')}
+          />
         </div>
       </CardContent>
     </Card>

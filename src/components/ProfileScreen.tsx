@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
+import { ProfileEditDialog } from './ProfileEditDialog';
 import { 
   MapPin, 
   GraduationCap, 
@@ -34,7 +36,7 @@ import {
  * This builds trust and helps other doctors assess professional credibility for networking.
  */
 export function ProfileScreen() {
-  const profileData = {
+  const [profileData, setProfileData] = useState({
     name: "Dr. Rajesh Singh",
     specialty: "Orthopedic Surgeon",
     hospital: "All India Institute of Medical Sciences",
@@ -45,7 +47,12 @@ export function ProfileScreen() {
     almaMater: "AIIMS Delhi",
     graduationYear: "2009",
     registrationNumber: "DMC-12345-2009",
-    profileCompletion: 85
+    profileCompletion: 85,
+    about: "Experienced orthopedic surgeon specializing in joint replacement and sports medicine."
+  });
+
+  const handleProfileUpdate = (updatedData: any) => {
+    setProfileData(prev => ({ ...prev, ...updatedData }));
   };
 
   const achievements = [
@@ -153,9 +160,10 @@ export function ProfileScreen() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg">Professional Details</CardTitle>
-              <Button variant="ghost" size="sm">
-                <Edit className="w-4 h-4" />
-              </Button>
+              <ProfileEditDialog 
+                profileData={profileData} 
+                onSave={handleProfileUpdate} 
+              />
             </div>
           </CardHeader>
           <CardContent className="space-y-3">
