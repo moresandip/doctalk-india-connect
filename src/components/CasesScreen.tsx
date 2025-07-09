@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { CaseViewDialog } from './CaseViewDialog';
 import { 
   Search, 
   Filter, 
@@ -189,9 +190,11 @@ export function CasesScreen() {
           </div>
           
           <div className="flex gap-1">
-            <Button variant="outline" size="sm" className="h-8">
-              View Case
-            </Button>
+            <CaseViewDialog caseData={caseData}>
+              <Button variant="outline" size="sm" className="h-8">
+                View Case
+              </Button>
+            </CaseViewDialog>
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
               <Share className="w-4 h-4" />
             </Button>
